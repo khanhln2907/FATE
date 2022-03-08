@@ -1,5 +1,3 @@
-#!/bin/bash
-
 #
 #  Copyright 2019 The FATE Authors. All Rights Reserved.
 #
@@ -16,18 +14,26 @@
 #  limitations under the License.
 #
 
-fate_project_base=$(cd `dirname "$(realpath "${BASH_SOURCE[0]:-${(%):-%x}}")"`; cd ../;pwd)
-export FATE_PROJECT_BASE=$fate_project_base
-export FATE_DEPLOY_BASE=$fate_project_base
-export EGGROLL_HOME=
-export PYTHONPATH=
+_TORCH_VALID = False
+try:
+    import torch.nn as nn
+    _TORCH_VALID = True
+except ImportError:
+    pass
 
-export FATE_LOG_LEVEL=DEBUG
-export FATE_PROFILE_LOG_ENABLED=0
-export EGGROLL_LOG_LEVEL=INFO
 
-venv=$fate_project_base/../venv/
-export JAVA_HOME=
-export PATH=$PATH:$JAVA_HOME/bin
-source ${venv}/bin/activate
+def build_model(model_type="sequential"):
+    if model_type != "sequential":
+        raise ValueError("Only support sequential model now")
+
+    return SequentialModel()
+
+
+class SequentialModel(object):
+    def __init__(self):
+        if _TORCH_VALID:
+            self._model = nn.Sequential()
+        else:
+            self._model = None
+
 

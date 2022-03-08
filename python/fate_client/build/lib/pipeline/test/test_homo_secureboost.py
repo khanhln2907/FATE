@@ -1,5 +1,3 @@
-#!/bin/bash
-
 #
 #  Copyright 2019 The FATE Authors. All Rights Reserved.
 #
@@ -16,18 +14,11 @@
 #  limitations under the License.
 #
 
-fate_project_base=$(cd `dirname "$(realpath "${BASH_SOURCE[0]:-${(%):-%x}}")"`; cd ../;pwd)
-export FATE_PROJECT_BASE=$fate_project_base
-export FATE_DEPLOY_BASE=$fate_project_base
-export EGGROLL_HOME=
-export PYTHONPATH=
 
-export FATE_LOG_LEVEL=DEBUG
-export FATE_PROFILE_LOG_ENABLED=0
-export EGGROLL_LOG_LEVEL=INFO
+from pipeline.component.homo_secureboost import HomoSecureBoost
 
-venv=$fate_project_base/../venv/
-export JAVA_HOME=
-export PATH=$PATH:$JAVA_HOME/bin
-source ${venv}/bin/activate
 
+a = HomoSecureBoost(name="homo_secureboost_0")
+
+print (a.output.data)
+print (a.output.model)

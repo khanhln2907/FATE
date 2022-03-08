@@ -1,5 +1,3 @@
-#!/bin/bash
-
 #
 #  Copyright 2019 The FATE Authors. All Rights Reserved.
 #
@@ -15,19 +13,31 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
+import click
+from flow_client.flow_cli.utils.cli_utils import access_server
 
-fate_project_base=$(cd `dirname "$(realpath "${BASH_SOURCE[0]:-${(%):-%x}}")"`; cd ../;pwd)
-export FATE_PROJECT_BASE=$fate_project_base
-export FATE_DEPLOY_BASE=$fate_project_base
-export EGGROLL_HOME=
-export PYTHONPATH=
 
-export FATE_LOG_LEVEL=DEBUG
-export FATE_PROFILE_LOG_ENABLED=0
-export EGGROLL_LOG_LEVEL=INFO
+@click.group(short_help="Queue Operations")
+@click.pass_context
+def queue(ctx):
+    """
+    \b
+    Provides a queue operational command, which is 'clean'.
+    For more details, please check out the help text.
+    """
+    pass
 
-venv=$fate_project_base/../venv/
-export JAVA_HOME=
-export PATH=$PATH:$JAVA_HOME/bin
-source ${venv}/bin/activate
 
+@queue.command("clean", short_help="Clean Queue Command")
+@click.pass_context
+def clean(ctx):
+    """
+    \b
+    - DESCRIPTION:
+        Queue Clean Command
+
+    \b
+    - USAGE:
+        flow queue clean
+    """
+    access_server('post', ctx, "job/clean/queue")

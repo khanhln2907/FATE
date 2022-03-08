@@ -1,5 +1,3 @@
-#!/bin/bash
-
 #
 #  Copyright 2019 The FATE Authors. All Rights Reserved.
 #
@@ -16,18 +14,20 @@
 #  limitations under the License.
 #
 
-fate_project_base=$(cd `dirname "$(realpath "${BASH_SOURCE[0]:-${(%):-%x}}")"`; cd ../;pwd)
-export FATE_PROJECT_BASE=$fate_project_base
-export FATE_DEPLOY_BASE=$fate_project_base
-export EGGROLL_HOME=
-export PYTHONPATH=
+from pipeline.param.sample_weight_param import SampleWeightParam
+from pipeline.component.component_base import FateComponent
+from pipeline.interface import Input
+from pipeline.interface import Output
 
-export FATE_LOG_LEVEL=DEBUG
-export FATE_PROFILE_LOG_ENABLED=0
-export EGGROLL_LOG_LEVEL=INFO
 
-venv=$fate_project_base/../venv/
-export JAVA_HOME=
-export PATH=$PATH:$JAVA_HOME/bin
-source ${venv}/bin/activate
+class SampleWeight(FateComponent, SampleWeightParam):
+    def __init__(self, **kwargs):
+        FateComponent.__init__(self, **kwargs)
 
+        new_kwargs = self.erase_component_base_param(**kwargs)
+
+        SampleWeightParam.__init__(self, **new_kwargs)
+
+        self.input = Input(self.name)
+        self.output = Output(self.name, data_type='single', has_model=True)
+        self._module_name = "SampleWeight"

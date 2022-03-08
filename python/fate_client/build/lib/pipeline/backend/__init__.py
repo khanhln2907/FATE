@@ -1,5 +1,3 @@
-#!/bin/bash
-
 #
 #  Copyright 2019 The FATE Authors. All Rights Reserved.
 #
@@ -16,18 +14,19 @@
 #  limitations under the License.
 #
 
-fate_project_base=$(cd `dirname "$(realpath "${BASH_SOURCE[0]:-${(%):-%x}}")"`; cd ../;pwd)
-export FATE_PROJECT_BASE=$fate_project_base
-export FATE_DEPLOY_BASE=$fate_project_base
-export EGGROLL_HOME=
-export PYTHONPATH=
+from pathlib import Path
 
-export FATE_LOG_LEVEL=DEBUG
-export FATE_PROFILE_LOG_ENABLED=0
-export EGGROLL_LOG_LEVEL=INFO
+from ruamel import yaml
 
-venv=$fate_project_base/../venv/
-export JAVA_HOME=
-export PATH=$PATH:$JAVA_HOME/bin
-source ${venv}/bin/activate
+with Path(__file__).parent.parent.joinpath("config.yaml").resolve().open("r") as fin:
+    __DEFAULT_CONFIG: dict = yaml.safe_load(fin)
 
+
+def set_default_config(ip: str, port: int, log_directory: str, console_display_log: bool, system_setting: dict):
+    global __DEFAULT_CONFIG
+    __DEFAULT_CONFIG.update(dict(ip=ip, port=port, log_directory=log_directory,
+                                 console_display_log=console_display_log, system_setting=system_setting))
+
+
+def get_default_config():
+    return __DEFAULT_CONFIG

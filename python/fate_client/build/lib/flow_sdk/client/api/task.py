@@ -1,5 +1,3 @@
-#!/bin/bash
-
 #
 #  Copyright 2019 The FATE Authors. All Rights Reserved.
 #
@@ -15,19 +13,17 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
+from flow_sdk.utils import preprocess
+from flow_sdk.client.api.base import BaseFlowAPI
 
-fate_project_base=$(cd `dirname "$(realpath "${BASH_SOURCE[0]:-${(%):-%x}}")"`; cd ../;pwd)
-export FATE_PROJECT_BASE=$fate_project_base
-export FATE_DEPLOY_BASE=$fate_project_base
-export EGGROLL_HOME=
-export PYTHONPATH=
 
-export FATE_LOG_LEVEL=DEBUG
-export FATE_PROFILE_LOG_ENABLED=0
-export EGGROLL_LOG_LEVEL=INFO
+class Task(BaseFlowAPI):
+    def list(self, limit=10):
+        kwargs = locals()
+        config_data, dsl_data = preprocess(**kwargs)
+        return self._post(url='job/list/task', json=config_data)
 
-venv=$fate_project_base/../venv/
-export JAVA_HOME=
-export PATH=$PATH:$JAVA_HOME/bin
-source ${venv}/bin/activate
-
+    def query(self, job_id=None, role=None, party_id=None, component_name=None, status=None):
+        kwargs = locals()
+        config_data, dsl_data = preprocess(**kwargs)
+        return self._post(url='job/task/query', json=config_data)
